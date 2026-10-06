@@ -4,7 +4,7 @@ from threading import Lock
 
 from fastapi import FastAPI, HTTPException, Response, status
 
-from models import Todo, TodoCreate, TodoUpdate
+from models import Todo, TodoCreate, TodoList, TodoUpdate
 
 app = FastAPI(title="Todo API")
 
@@ -31,15 +31,15 @@ def _get_or_404(todo_id: int) -> Todo:
     return todo
 
 
-@app.get("/todos", response_model=list[Todo])
-def list_todos() -> list[Todo]:
+@app.get("/todos", response_model=TodoList)
+def list_todos() -> TodoList:
     """List all todos.
 
     Returns:
         All todos, in creation order.
     """
     with _lock:
-        return list(_todos.values())
+        return TodoList(list(_todos.values()))
 
 
 @app.post("/todos", response_model=Todo, status_code=status.HTTP_201_CREATED)

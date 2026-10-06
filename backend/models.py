@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, RootModel, model_validator
 
 
 class TodoCreate(BaseModel):
@@ -43,3 +43,7 @@ class Todo(BaseModel):
     text: str
     completed: bool
 
+
+
+class TodoList(RootModel[list[Todo]]):
+    """A list of todos, serialized as a plain JSON array."""
