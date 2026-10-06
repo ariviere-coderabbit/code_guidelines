@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import type { Todo } from './types'
 
@@ -14,24 +14,34 @@ interface TodoItemProps {
 export function TodoItem({ todo, disabled, onToggle, onEdit, onDelete }: TodoItemProps) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(todo.text)
+  const finished = useRef(false)
 
   /** Switch to edit mode, seeding the input with the current text. */
   function startEditing() {
+    finished.current = false
     setDraft(todo.text)
     setEditing(true)
   }
 
+  /** End the current edit session once; later calls (e.g. a trailing blur) are ignored. */
+  function finish(): boolean {
+    if (finished.current) return false
+    finished.current = true
+    setEditing(false)
+    return true
+  }
+
   /** Leave edit mode, sending the change only when the trimmed text is new and nonempty. */
   function commit() {
-    setEditing(false)
+    if (!finish()) return
     const trimmed = draft.trim()
     if (trimmed && trimmed !== todo.text) onEdit(todo, trimmed)
   }
 
-  /** Save on Enter and discard the draft on Escape. */
+  /** Save on Enter (unless composing with an IME) and discard the draft on Escape. */
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter') commit()
-    else if (event.key === 'Escape') setEditing(false)
+    if (event.key === 'Enter' && !event.nativeEvent.isComposing) commit()
+    else if (event.key === 'Escape') finish()
   }
 
   return (
