@@ -32,6 +32,11 @@ ul {
   border-bottom: 1px solid #ddd;
 }
 
+.todo label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .todo.completed span {
   text-decoration: line-through;
   color: #666;
