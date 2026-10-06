@@ -156,7 +156,7 @@ reviews:
   #  - On GitHub/Bitbucket, it will Request Changes and block when issues are flagged
   #  - Workflows that auto-merge after only one approver are impacted by this
   #  - Must be set to true if CodeRabbit is a required reviewer per branch protection
-  request_changes_workflow: false
+  request_changes_workflow: true
 
 # tone_instructions: >
 #   - Indicate if the code is in the path that would cause a production outage or not.
