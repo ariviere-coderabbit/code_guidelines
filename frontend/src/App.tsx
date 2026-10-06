@@ -4,10 +4,12 @@ import { createTodo, deleteTodo, listTodos, updateTodo } from './api'
 import { TodoItem } from './TodoItem'
 import type { Todo } from './types'
 
+/** Return an error's message, or a fallback for non-Error values. */
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Something went wrong'
 }
 
+/** Render the todo list and manage loading, mutations, and error feedback. */
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [text, setText] = useState('')
@@ -34,6 +36,7 @@ export default function App() {
     }
   }, [])
 
+  /** Clear the previous error and await an action, displaying any failure. */
   async function run(action: () => Promise<void>) {
     try {
       setError(null)
@@ -43,6 +46,7 @@ export default function App() {
     }
   }
 
+  /** Add or remove a todo ID from the set of pending mutations. */
   function setPending(id: number, pending: boolean) {
     setPendingIds((current) => {
       const next = new Set(current)
@@ -52,6 +56,7 @@ export default function App() {
     })
   }
 
+  /** Submit nonempty trimmed text once, preserving edits made during the request. */
   function handleAdd(event: FormEvent) {
     event.preventDefault()
     const trimmed = text.trim()
@@ -70,6 +75,7 @@ export default function App() {
     })
   }
 
+  /** Start an action for a todo, report failures, and clear its pending state afterward. */
   function withPending(id: number, action: () => Promise<void>) {
     setPending(id, true)
     run(async () => {
@@ -81,6 +87,7 @@ export default function App() {
     })
   }
 
+  /** Toggle a todo's completion on the server and store the returned todo locally. */
   function handleToggle(todo: Todo) {
     withPending(todo.id, async () => {
       const updated = await updateTodo(todo.id, { completed: !todo.completed })
@@ -89,6 +96,7 @@ export default function App() {
     })
   }
 
+  /** Delete a todo on the server, then remove it from the local list. */
   function handleDelete(todo: Todo) {
     withPending(todo.id, async () => {
       await deleteTodo(todo.id)

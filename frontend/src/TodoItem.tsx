@@ -7,6 +7,7 @@ interface TodoItemProps {
   onDelete: (todo: Todo) => void
 }
 
+/** Render a todo with toggle and delete callbacks, disabling both controls when requested. */
 export function TodoItem({ todo, disabled, onToggle, onDelete }: TodoItemProps) {
   return (
     <li className={todo.completed ? 'todo completed' : 'todo'}>
