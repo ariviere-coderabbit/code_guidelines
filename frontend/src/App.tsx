@@ -12,6 +12,8 @@ export default function App() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [text, setText] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [pendingIds, setPendingIds] = useState<ReadonlySet<number>>(new Set())
 
   useEffect(() => {
     let cancelled = false
@@ -21,6 +23,9 @@ export default function App() {
       })
       .catch((e: unknown) => {
         if (!cancelled) setError(errorMessage(e))
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
       })
     return () => {
       cancelled = true
@@ -36,6 +41,15 @@ export default function App() {
     }
   }
 
+  function setPending(id: number, pending: boolean) {
+    setPendingIds((current) => {
+      const next = new Set(current)
+      if (pending) next.add(id)
+      else next.delete(id)
+      return next
+    })
+  }
+
   function handleAdd(event: FormEvent) {
     event.preventDefault()
     const trimmed = text.trim()
@@ -43,14 +57,20 @@ export default function App() {
     run(async () => {
       const created = await createTodo(trimmed)
       setTodos((current) => [...current, created])
-      setText('')
+      // Keep anything typed while the request was in flight.
+      setText((current) => (current.trim() === trimmed ? '' : current))
     })
   }
 
   function handleToggle(todo: Todo) {
+    setPending(todo.id, true)
     run(async () => {
-      const updated = await updateTodo(todo.id, { completed: !todo.completed })
-      setTodos((current) => current.map((t) => (t.id === updated.id ? updated : t)))
+      try {
+        const updated = await updateTodo(todo.id, { completed: !todo.completed })
+        setTodos((current) => current.map((t) => (t.id === updated.id ? updated : t)))
+      } finally {
+        setPending(todo.id, false)
+      }
     })
   }
 
@@ -71,8 +91,11 @@ export default function App() {
           placeholder="What needs doing?"
           maxLength={500}
           aria-label="New todo"
+          disabled={loading}
         />
-        <button type="submit">Add</button>
+        <button type="submit" disabled={loading}>
+          Add
+        </button>
       </form>
       {error && <p role="alert">{error}</p>}
       <ul>
@@ -80,6 +103,7 @@ export default function App() {
           <TodoItem
             key={todo.id}
             todo={todo}
+            disabled={pendingIds.has(todo.id)}
             onToggle={handleToggle}
             onDelete={handleDelete}
           />
