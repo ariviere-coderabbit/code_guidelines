@@ -3,8 +3,10 @@ import type { Todo, TodoUpdate } from './types'
 const BASE_URL = '/api/todos'
 
 async function request(url: string, init?: RequestInit): Promise<Response> {
+  console.log('[api]', init?.method ?? 'GET', url)
   const response = await fetch(url, init)
   if (!response.ok) {
+    console.log('[api] failed', response.status, url)
     throw new Error(`Request failed with status ${response.status}`)
   }
   return response

@@ -20,6 +20,7 @@ export default function App() {
     let cancelled = false
     listTodos()
       .then((loaded) => {
+        console.log('[App] loaded todos', loaded.length)
         if (!cancelled) setTodos(loaded)
       })
       .catch((e: unknown) => {
@@ -59,6 +60,7 @@ export default function App() {
     run(async () => {
       try {
         const created = await createTodo(trimmed)
+        console.log('[App] created todo', created)
         setTodos((current) => [...current, created])
         // Keep anything typed while the request was in flight.
         setText((current) => (current.trim() === trimmed ? '' : current))
@@ -82,6 +84,7 @@ export default function App() {
   function handleToggle(todo: Todo) {
     withPending(todo.id, async () => {
       const updated = await updateTodo(todo.id, { completed: !todo.completed })
+      console.log('[App] toggled todo', updated)
       setTodos((current) => current.map((t) => (t.id === updated.id ? updated : t)))
     })
   }
@@ -89,6 +92,7 @@ export default function App() {
   function handleDelete(todo: Todo) {
     withPending(todo.id, async () => {
       await deleteTodo(todo.id)
+      console.log('[App] deleted todo', todo.id)
       setTodos((current) => current.filter((t) => t.id !== todo.id))
     })
   }
