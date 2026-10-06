@@ -37,7 +37,19 @@ ul {
   overflow-wrap: anywhere;
 }
 
-.todo.completed span {
+.todo > input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.25rem;
+}
+
+.todo .actions {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.todo.completed label span {
   text-decoration: line-through;
   color: #666;
 }

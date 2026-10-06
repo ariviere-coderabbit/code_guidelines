@@ -96,6 +96,15 @@ export default function App() {
     })
   }
 
+  /** Save new text for a todo on the server and store the returned todo locally. */
+  function handleEdit(todo: Todo, text: string) {
+    withPending(todo.id, async () => {
+      const updated = await updateTodo(todo.id, { text })
+      console.log('[App] edited todo', updated)
+      setTodos((current) => current.map((t) => (t.id === updated.id ? updated : t)))
+    })
+  }
+
   /** Delete a todo on the server, then remove it from the local list. */
   function handleDelete(todo: Todo) {
     withPending(todo.id, async () => {
@@ -129,6 +138,7 @@ export default function App() {
             todo={todo}
             disabled={pendingIds.has(todo.id)}
             onToggle={handleToggle}
+            onEdit={handleEdit}
             onDelete={handleDelete}
           />
         ))}
