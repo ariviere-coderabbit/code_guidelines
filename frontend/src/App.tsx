@@ -13,6 +13,7 @@ export default function App() {
   const [text, setText] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [adding, setAdding] = useState(false)
   const [pendingIds, setPendingIds] = useState<ReadonlySet<number>>(new Set())
 
   useEffect(() => {
@@ -53,12 +54,17 @@ export default function App() {
   function handleAdd(event: FormEvent) {
     event.preventDefault()
     const trimmed = text.trim()
-    if (!trimmed) return
+    if (!trimmed || adding) return
+    setAdding(true)
     run(async () => {
-      const created = await createTodo(trimmed)
-      setTodos((current) => [...current, created])
-      // Keep anything typed while the request was in flight.
-      setText((current) => (current.trim() === trimmed ? '' : current))
+      try {
+        const created = await createTodo(trimmed)
+        setTodos((current) => [...current, created])
+        // Keep anything typed while the request was in flight.
+        setText((current) => (current.trim() === trimmed ? '' : current))
+      } finally {
+        setAdding(false)
+      }
     })
   }
 
@@ -91,9 +97,9 @@ export default function App() {
           placeholder="What needs doing?"
           maxLength={500}
           aria-label="New todo"
-          disabled={loading}
+          disabled={loading || adding}
         />
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading || adding}>
           Add
         </button>
       </form>
