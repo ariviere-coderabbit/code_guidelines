@@ -34,7 +34,7 @@ ul {
 
 .todo.completed span {
   text-decoration: line-through;
-  color: #888;
+  color: #666;
 }
 
 [role='alert'] {
