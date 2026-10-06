@@ -19,7 +19,7 @@ export function TodoItem({ todo, disabled, onToggle, onDelete }: TodoItemProps) 
         />
         <span>{todo.text}</span>
       </label>
-      <button type="button" onClick={() => onDelete(todo)}>
+      <button type="button" disabled={disabled} onClick={() => onDelete(todo)}>
         Delete
       </button>
     </li>

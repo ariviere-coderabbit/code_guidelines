@@ -68,20 +68,26 @@ export default function App() {
     })
   }
 
-  function handleToggle(todo: Todo) {
-    setPending(todo.id, true)
+  function withPending(id: number, action: () => Promise<void>) {
+    setPending(id, true)
     run(async () => {
       try {
-        const updated = await updateTodo(todo.id, { completed: !todo.completed })
-        setTodos((current) => current.map((t) => (t.id === updated.id ? updated : t)))
+        await action()
       } finally {
-        setPending(todo.id, false)
+        setPending(id, false)
       }
     })
   }
 
+  function handleToggle(todo: Todo) {
+    withPending(todo.id, async () => {
+      const updated = await updateTodo(todo.id, { completed: !todo.completed })
+      setTodos((current) => current.map((t) => (t.id === updated.id ? updated : t)))
+    })
+  }
+
   function handleDelete(todo: Todo) {
-    run(async () => {
+    withPending(todo.id, async () => {
       await deleteTodo(todo.id)
       setTodos((current) => current.filter((t) => t.id !== todo.id))
     })
