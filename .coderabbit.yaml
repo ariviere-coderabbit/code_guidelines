@@ -9,6 +9,8 @@ knowledge_base:
       - "**/CODING_GUIDELINES.md"
       - files: "random/old-notes/TEAM_RULES.md"
         applyTo: "**/*"
+      - files: "docs/MISSING_STANDARDS.md"
+        applyTo: "**/*.py"
      ## Give a specific guideline in this repo and apply to a range of files
      #  - files: docs/PYTHON_GUIDELINES.md
      #    applyTo: "**/*.py"
