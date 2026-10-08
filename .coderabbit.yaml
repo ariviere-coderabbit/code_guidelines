@@ -159,7 +159,8 @@ reviews:
   #  - Must be set to true if CodeRabbit is a required reviewer per branch protection
   request_changes_workflow: true
 
-# tone_instructions: >
+tone_instructions: >
+  - Be succinct and direct. State the issue, its impact, and the fix. Include only information the PR author needs to act. Skip praise, filler, repeated explanations, and generic advice.
 #   - Indicate if the code is in the path that would cause a production outage or not.
 #   - Explain the analysis chain whenever possible to explain to the user the context provenance of a finding.
 
