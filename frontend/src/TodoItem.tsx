@@ -14,7 +14,7 @@ interface TodoItemProps {
 export function TodoItem({ todo, disabled, onToggle, onEdit, onDelete }: TodoItemProps) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(todo.text)
-  const [highlighted, setHighlighted] = useState(false)
+  const [isHighlighted, setIsHighlighted] = useState(false)
   const finished = useRef(false)
 
   /** Switch to edit mode, seeding the input with the current text. */
@@ -49,9 +49,9 @@ export function TodoItem({ todo, disabled, onToggle, onEdit, onDelete }: TodoIte
 
   return (
     <li
-      className={`${todo.completed ? 'todo completed' : 'todo'}${highlighted ? ' highlighted' : ''}`}
-      onMouseEnter={() => setHighlighted(true)}
-      onMouseLeave={() => setHighlighted(false)}
+      className={`${todo.completed ? 'todo completed' : 'todo'}${isHighlighted ? ' highlighted' : ''}`}
+      onMouseEnter={() => setIsHighlighted(true)}
+      onMouseLeave={() => setIsHighlighted(false)}
     >
       {editing ? (
         <input
