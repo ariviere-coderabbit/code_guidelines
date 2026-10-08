@@ -5,7 +5,8 @@
 knowledge_base:
   automatic_linking_mode: enabled # Automatically detect related repositories to flag breaking changes & downstream impact
   code_guidelines:
-    filePatterns: []
+    filePatterns:
+      - "**/CODING_GUIDELINES.md"
      ## Give a specific guideline in this repo and apply to a range of files
      #  - files: docs/PYTHON_GUIDELINES.md
      #    applyTo: "**/*.py"
