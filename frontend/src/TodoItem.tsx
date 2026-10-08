@@ -20,6 +20,7 @@ export function TodoItem({ todo, disabled, onToggle, onEdit, onDelete }: TodoIte
   function startEditing() {
     finished.current = false
     setDraft(todo.text)
+    console.log('[TodoItem] start editing', todo.id)
     setEditing(true)
   }
 
@@ -35,6 +36,7 @@ export function TodoItem({ todo, disabled, onToggle, onEdit, onDelete }: TodoIte
   function commit() {
     if (!finish()) return
     const trimmed = draft.trim()
+    console.log('[TodoItem] commit edit', todo.id, trimmed)
     if (trimmed && trimmed !== todo.text) onEdit(todo, trimmed)
   }
 
