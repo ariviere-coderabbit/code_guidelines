@@ -31,6 +31,25 @@ def _get_or_404(todo_id: int) -> Todo:
     return todo
 
 
+def get_todos_by_ids(todo_ids: list[int]) -> list[Todo]:
+    """Look up several todos by id.
+
+    Args:
+        todo_ids: The ids of the todos to find.
+
+    Returns:
+        The matching todos, in the same order as ``todo_ids``.
+
+    Raises:
+        HTTPException: 404 if any id has no matching todo.
+    """
+    todos = []
+    with _lock:
+        for todo_id in todo_ids:
+            todos.append(_get_or_404(todo_id))
+    return todos
+
+
 @app.get("/todos", response_model=TodoList)
 def list_todos() -> TodoList:
     """List all todos.
