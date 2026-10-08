@@ -45,8 +45,10 @@ def get_todos_by_ids(todo_ids: list[int]) -> list[Todo]:
     """
     todos = []
     with _lock:
-        for todo_id in todo_ids:
-            todos.append(_get_or_404(todo_id))
+        missing_ids = set(todo_ids) - _todos.keys()
+        if missing_ids:
+            raise HTTPException(status_code=404, detail="Todo not found")
+        todos = [_todos[todo_id] for todo_id in todo_ids]
     return todos
 
 
